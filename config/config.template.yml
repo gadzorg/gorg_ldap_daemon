@@ -1,0 +1,31 @@
+default: &default
+  application_name: GoogleDirectoryDaemon-test
+  application_id: gdd
+
+  rabbitmq_host: localhost
+  rabbitmq_port: 5672
+  rabbitmq_vhost: /
+  rabbitmq_queue_name: gdirdaemon
+  rabbitmq_deferred_time: 1800000
+  rabbitmq_max_attempts: 48
+  exchange_name: exchange
+  rabbitmq_user: my_user
+  rabbitmq_password: P4ssWord
+
+  log_routing_key: "logging.key"
+
+  ldap_host: localhost
+  ldap_port: 389
+  ldap_base: dc=mycompany,dc=org
+  ldap_bind_dn: cn=myuser,dc=mycompany,dc=org
+  ldap_password: P4ssWord
+
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default

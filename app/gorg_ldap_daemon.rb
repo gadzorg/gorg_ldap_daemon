@@ -3,6 +3,7 @@
 
 require 'yaml'
 require 'gorg_service'
+require 'active_ldap'
 
 $LOAD_PATH.unshift File.expand_path('..', __FILE__)
 

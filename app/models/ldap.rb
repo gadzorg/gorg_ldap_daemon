@@ -1,0 +1,2 @@
+module LDAP
+end
