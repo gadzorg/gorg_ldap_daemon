@@ -16,7 +16,7 @@ class GorgLdapDaemon
     @gorg_service=GorgService.new
   end
 
- def run
+  def run
     begin
       self.start
       puts " [*] Waiting for messages. To exit press CTRL+C"
@@ -36,12 +36,27 @@ class GorgLdapDaemon
     @gorg_service.stop
   end
 
+  def self.env
+    ENV['GORG_LDAP_DAEMON_ENV'] || "development"
+  end
+
   def self.config
     RAW_CONFIG[ENV['GORG_LDAP_DAEMON_ENV']]
   end
 
   def self.root
     File.dirname(__FILE__)
+  end
+
+  def self.logger
+    unless @logger
+      file = File.open(File.expand_path("../logs/#{self.env}.log",self.root), "a+")
+      file.sync = true
+#      @logger = Logger.new(file, 'daily')
+      @logger = Logger.new(STDOUT)
+
+    end
+    @logger
   end
 end
 

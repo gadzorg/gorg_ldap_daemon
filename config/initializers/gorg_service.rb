@@ -47,6 +47,6 @@ GorgService.configure do |c|
   #   "third.routing.key" => MyMessageHandler,
   # }
   c.message_handler_map={
-    "request.ldap.update"=>UpdateMessageHandler
+    "request.ldapd.update"=>UpdateMessageHandler
   }
 end

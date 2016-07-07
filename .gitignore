@@ -9,5 +9,7 @@
 /tmp/
 /build/
 /config/config.yml
+/logs/*.log
+.byebug_history
 *.gem
 *.sublime-*
