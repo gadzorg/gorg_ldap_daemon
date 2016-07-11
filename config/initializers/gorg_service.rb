@@ -23,6 +23,8 @@ GorgService.configure do |c|
   c.rabbitmq_host=GorgLdapDaemon.config['rabbitmq_host']
   c.rabbitmq_port=GorgLdapDaemon.config['rabbitmq_port']
   c.rabbitmq_vhost=GorgLdapDaemon.config['rabbitmq_vhost']
+
+  c.rabbitmq_queue_name=GorgLdapDaemon.config['rabbitmq_queue_name']
   #
   #
   # c.rabbitmq_queue_name = c.application_name
@@ -32,11 +34,11 @@ GorgService.configure do |c|
   c.rabbitmq_deferred_time=GorgLdapDaemon.config['rabbitmq_deferred_time']
   # 
   # maximum number of try before discard a message
-  c.rabbitmq_deferred_time=GorgLdapDaemon.config['rabbitmq_max_attempts']
+  c.rabbitmq_max_attempts=GorgLdapDaemon.config['rabbitmq_max_attempts']
   #
   # The routing key used when sending a message to the central log system (Hardfail or Warning)
   # Central logging is disable if nil
-  c.rabbitmq_deferred_time=GorgLdapDaemon.config['rlog_routing_key']
+  c.log_routing_key=GorgLdapDaemon.config['rlog_routing_key']
   #
   # Routing hash
   #  map routing_key of received message with MessageHandler 
@@ -46,7 +48,10 @@ GorgService.configure do |c|
   #   "Another.routing.key" => OtherMessageHandler,
   #   "third.routing.key" => MyMessageHandler,
   # }
+  c.logger=GorgLdapDaemon.logger
+
   c.message_handler_map={
-    "request.ldapd.update"=>UpdateMessageHandler
+    "request.ldapd.account.update"=>UpdateAccountMessageHandler,
+    "request.ldapd.account.delete"=>DeleteAccountMessageHandler
   }
 end

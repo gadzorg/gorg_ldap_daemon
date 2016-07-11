@@ -3,7 +3,7 @@
 
 require 'byebug'
 
-class UpdateMessageHandler < BaseMessageHandler
+class UpdateAccountMessageHandler < BaseMessageHandler
   # Respond to routing key: request.gapps.create
 
   def process
@@ -34,8 +34,9 @@ class UpdateMessageHandler < BaseMessageHandler
     GorgLdapDaemon.logger.debug("Use mockup API")
     MockupGramAccount.new ({
       uuid:@uuid,
-      id_soce: 83616,
-      hruid: "alexandre.narbonne.ext",
+      id_soce: 157157,
+      uuid: "74a6bcb1-762b-4100-b6eb-2d40dd03835c",
+      hruid: "alexandre.narbonne.ext.157",
       id: 53,
       enabled: true,
       lastname: "Narbonne",
@@ -61,6 +62,7 @@ class UpdateMessageHandler < BaseMessageHandler
       descriptionCompte: "Created by LdapDaemon at #{DateTime.now.to_s}",
       homeDirectory: '/nonexistant',
       loginValidationCheck: "CGU=;",
+      dn:"hruid=#{@data.hruid},ou=comptes,ou=gram,dc=gadz,dc=org"
     }
   end
 
@@ -68,6 +70,7 @@ class UpdateMessageHandler < BaseMessageHandler
     uid_number= @data.id_soce+1000
 
     {
+      :uuid           => @data.uuid,
       :idSoce         => @data.id_soce,
       :hruid          => @data.hruid,
       :prenom         => @data.firstname,
