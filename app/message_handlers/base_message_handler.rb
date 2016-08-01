@@ -68,7 +68,12 @@ class BaseMessageHandler < GorgService::MessageHandler
 
   def raise_ldap_account_not_found(key,value)
     GorgLdapDaemon.logger.error("Account not found in LDAP - #{key}= #{value}")
-    raise_softfail("Account not found in LDAP - #{key}= #{value}",error: LdapObjectNotFoundError)
+    raise_hardfail("Account not found in LDAP - #{key}= #{value}",error: LdapObjectNotFoundError)
+  end
+
+  def raise_gram_account_not_found(value)
+    GorgLdapDaemon.logger.error("Account not found in Gram - UUID= #{value}")
+    raise_hardfail("Account not found in Gram - UUID= #{value}",error: GramAccountNotFoundError)
   end
 end
 
@@ -77,3 +82,4 @@ end
 class InvalidPayloadError < StandardError; end
 class UnimplementedMessageHandlerError < StandardError; end
 class LdapObjectNotFoundError < StandardError; end
+class GramAccountNotFoundError < StandardError; end

@@ -56,6 +56,8 @@ class UpdateAccountMessageHandler < BaseMessageHandler
       #retrieve data from Gram, with password
       GramV2Client::Account.find(@uuid, params:{show_password_hash: "true"})
 
+    rescue ActiveResource::ResourceNotFound
+      raise_gram_account_not_found(@uuid)
     rescue ActiveResource::ServerError
       raise_gram_connection_error
     end

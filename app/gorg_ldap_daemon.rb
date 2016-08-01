@@ -22,8 +22,8 @@ class GorgLdapDaemon
   # Exit with Ctrl+C
   def run
     begin
-      self.start
       puts " [*] Waiting for messages. To exit press CTRL+C"
+      self.start
       loop do
         sleep(1)
       end
