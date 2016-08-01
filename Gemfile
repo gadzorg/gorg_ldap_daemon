@@ -7,4 +7,9 @@ gem 'gorg_message_sender'
 gem 'gram_v1_client'
 gem 'net-ldap'
 gem 'activeldap'
-gem 'byebug'
+
+group :development, :test do
+  gem 'rspec'
+  gem 'byebug'
+  gem 'bogus'
+end

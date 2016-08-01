@@ -12,10 +12,14 @@ class GorgLdapDaemon
   RAW_CONFIG ||= YAML::load(File.open(path))
   ENV['GORG_LDAP_DAEMON_ENV']||="development"
 
+  #Initialize running environment and dependencies
+  # TODO Allow Logger overriding
   def initialize
     @gorg_service=GorgService.new
   end
 
+  #Run the worker
+  # Exit with Ctrl+C
   def run
     begin
       self.start
@@ -36,6 +40,8 @@ class GorgLdapDaemon
     @gorg_service.stop
   end
 
+
+  #Class methods
   def self.env
     ENV['GORG_LDAP_DAEMON_ENV'] || "development"
   end

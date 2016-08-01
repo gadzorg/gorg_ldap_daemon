@@ -16,7 +16,7 @@ class DeleteAccountMessageHandler < BaseMessageHandler
       @account.delete
       GorgLdapDaemon.logger.info("Successfully deleted account #{@uuid}")
     else
-      raise_account_not_found
+      raise_ldap_account_not_found(:uuid, @uuid)
     end
   end
 
@@ -26,10 +26,4 @@ class DeleteAccountMessageHandler < BaseMessageHandler
       #TODO handle null hruid, maybe by validating the message JSON
     end
   end
-
-  def raise_account_not_found
-    GorgLdapDaemon.logger.error("Account not found in LDAP - uuid = #{@uuid}")
-    raise_hardfail("Account not found in LDAP = #{@uuid}")
-  end
-
 end

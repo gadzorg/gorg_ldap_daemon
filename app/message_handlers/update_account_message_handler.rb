@@ -12,22 +12,18 @@ class UpdateAccountMessageHandler < BaseMessageHandler
 
     @data=retrieve_gram_data
 
-    @ldap_key=@data.id_soce
-    GorgLdapDaemon.logger.debug("LDAPKey (soce_id) = #{@ldap_key.inspect}")
-
+    @ldap_key=@data.uuid
+    GorgLdapDaemon.logger.debug("LDAPKey (uuid) = #{@ldap_key.inspect}")
     raise_invalide_ldap_key unless @ldap_key
 
-    @account= (LDAP::Account.exists?(@ldap_key) ? LDAP::Account.find(@ldap_key) : LDAP::Account.new(default_values))
-
-
+    @account=LDAP::Account.find(attribute: "uuid", value: @ldap_key)
+    @account||=LDAP::Account.new(default_values)
+ 
     if @account.update_attributes(attributes_mapping)
       GorgLdapDaemon.logger.info("Successfully updated account #{@uuid}")
     else
       raise_not_updated
     end
-    
-
-
   end
 
   def retrieve_gram_data
@@ -35,7 +31,6 @@ class UpdateAccountMessageHandler < BaseMessageHandler
     MockupGramAccount.new ({
       uuid:@uuid,
       id_soce: 157157,
-      uuid: "74a6bcb1-762b-4100-b6eb-2d40dd03835c",
       hruid: "alexandre.narbonne.ext.157",
       id: 53,
       enabled: true,
@@ -85,7 +80,7 @@ class UpdateAccountMessageHandler < BaseMessageHandler
   end
 
   def set_uuid
-    @uuid=@msg.data[:uuid]
+    @uuid=msg.data[:uuid]
     unless @uuid
       #TODO handle null hruid, maybe by validating the message JSON
     end
