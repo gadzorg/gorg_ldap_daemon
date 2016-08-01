@@ -59,6 +59,13 @@ class BaseMessageHandler < GorgService::MessageHandler
     raise_softfail("Unable to connect to LDAP server")
   end
 
+  # To be raised in case of connection errors with Gram API server
+  def raise_gram_connection_error
+    GorgLdapDaemon.logger.error("Unable to connect to GrAM API server")
+    raise_softfail("Unable to connect to GrAM API server")
+  end
+
+
   def raise_ldap_account_not_found(key,value)
     GorgLdapDaemon.logger.error("Account not found in LDAP - #{key}= #{value}")
     raise_softfail("Account not found in LDAP - #{key}= #{value}",error: LdapObjectNotFoundError)
