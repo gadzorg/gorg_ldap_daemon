@@ -13,7 +13,6 @@ RSpec.describe UpdateAccountMessageHandler, type: :message_handler do
                                 firstname: "Georges",
                                 email: "georges.dupont@poubs.org",
                                 gapps_email: "georges.dupont@poubs.org",
-                                password:"abcdefge",
                                 gender: "male",
                                 is_gadz: true,
                                 is_student: false,

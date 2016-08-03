@@ -42,7 +42,7 @@ class BaseMessageHandler < GorgService::MessageHandler
   # validate_payload MAY be implemented
   # If not, assumes messages is valid, log a warning and returns true
   def validate_payload
-    GorgLdapDaemon.logger.warn("#{self.classs} doesn't validate_payload(), assume payload is valid")
+    GorgLdapDaemon.logger.warn("#{self.class} doesn't validate_payload(), assume payload is valid")
     true
   end
 

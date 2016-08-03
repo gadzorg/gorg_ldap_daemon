@@ -24,7 +24,6 @@ class UpdateAccountMessageHandler < BaseMessageHandler
     end
 
     update_group_membership
-
   end
 
   def update_group_membership
