@@ -11,8 +11,8 @@
 class BaseMessageHandler < GorgService::MessageHandler
   # Respond to routing key: request.gapps.create
 
-  def initialize _msg
-    @msg=_msg
+  def initialize incoming_msg
+    @msg=incoming_msg
 
     # validate_payload method should be implemented by children classes
     validate_payload
@@ -35,14 +35,14 @@ class BaseMessageHandler < GorgService::MessageHandler
   # process MUST be implemented
   # If not, raise hardfail
   def process
-    GorgLdapDaemon.logger.error("#{self.class.to_s} doesn't implement process()")
-    raise_hardfail("#{self.class.to_s} doesn't implement process()", UnimplementedMessageHandlerError)
+    GorgLdapDaemon.logger.error("#{self.class} doesn't implement process()")
+    raise_hardfail("#{self.class} doesn't implement process()", UnimplementedMessageHandlerError)
   end
 
   # validate_payload MAY be implemented
   # If not, assumes messages is valid, log a warning and returns true
   def validate_payload
-    GorgLdapDaemon.logger.warn("#{self.class.to_s} doesn't validate_payload(), assume payload is valid")
+    GorgLdapDaemon.logger.warn("#{self.classs} doesn't validate_payload(), assume payload is valid")
     true
   end
 

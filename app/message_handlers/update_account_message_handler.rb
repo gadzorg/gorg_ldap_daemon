@@ -22,6 +22,7 @@ class UpdateAccountMessageHandler < BaseMessageHandler
     else
       raise_not_updated
     end
+
     update_group_membership
 
   end
