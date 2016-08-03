@@ -40,7 +40,10 @@ class UpdateAccountMessageHandler < BaseMessageHandler
 
     to_add_gram_groups.each do |gram_group|
       #check groups existence and create it if not
-      unless (ldap_group=LDAP::Group.find_or_build_by_name(gram_group.short_name)) && ldap_group.persisted?
+      ldap_group=LDAP::Group.find_or_build_by_name(gram_group.short_name)
+
+      #TODO move this to LDAP::Group Model
+      unless ldap_group.persisted?
         ldap_group.assign_attributes_from_gram(gram_group)
         if ldap_group.save
           GorgLdapDaemon.logger.info("Group #{gram_group.short_name} did not exist - created")

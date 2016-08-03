@@ -14,9 +14,6 @@ engines:
       - javascript
       - python
       - php
-    exclude_fingerprints:
-      - 316dbccb14c0880991a1ca1f70c8d7b0
-      - f1dfada4d46122b653def4c592826f42
   fixme:
     enabled: true
   rubocop:
