@@ -80,9 +80,4 @@ class UpdateAccountMessageHandler < BaseMessageHandler
     raise_hardfail("Invalid data in GrAM - #{@ldap_account.errors.messages.inspect}")
   end
 
-  def raise_not_updated_group(ldap_group)
-    GorgLdapDaemon.logger.error("Unable to save group #{ldap_group.cn} : #{ldap_group.errors.messages.inspect}")
-    raise_hardfail("Unable to save group #{ldap_group.cn} : #{ldap_group.errors.messages.inspect}")
-  end
-
 end
