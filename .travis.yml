@@ -6,3 +6,6 @@ before_script:
   - cp config/config.travis.yml config/config.yml
 script:
   - bundle exec rspec
+addons:
+  code_climate:
+      repo_token: 2fb5666778862e3d7db94953485defc99c41433f787b43d9ec7dd06220423d37

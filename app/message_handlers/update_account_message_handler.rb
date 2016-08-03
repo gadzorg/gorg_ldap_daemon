@@ -22,7 +22,11 @@ class UpdateAccountMessageHandler < BaseMessageHandler
     else
       raise_not_updated
     end
+    update_group_membership
 
+  end
+
+  def update_group_membership
     target_groups=@gram_account.groups.map{|g| g.short_name}
     current_groups=@ldap_account.groups.map{|g| g.cn}
 
@@ -71,7 +75,7 @@ class UpdateAccountMessageHandler < BaseMessageHandler
   end
 
   def raise_invalide_ldap_key
-    GorgLdapDaemon.logger.error("The following ldap key '#{@ldap_key.to_s}' is invalid")
+    GorgLdapDaemon.logger.error("The following ldap key #{@ldap_key.inspect} is invalid")
     raise_hardfail("Invalid data in GrAM - ldap primary key = #{@ldap_key.inspect}")
   end
 

@@ -19,7 +19,7 @@ class LDAP::Account < LDAP::Base
 
 
   def add_role(role_name, application_filter="/.*/")
-    dn="roleName=#{role_name},#{self.dn.to_s}"
+    dn="roleName=#{role_name},#{self.dn}"
     role=LDAP::Role.new(dn)
     role.applicationFilter=application_filter
     role.ineritUser=true
@@ -53,7 +53,7 @@ class LDAP::Account < LDAP::Base
 
   def self.default_values
     {
-      descriptionCompte: "Created by LdapDaemon at #{DateTime.now.to_s}",
+      descriptionCompte: "Created by LdapDaemon at #{DateTime.now}",
       homeDirectory: '/nonexistant',
       loginValidationCheck: "CGU=;"      
     }

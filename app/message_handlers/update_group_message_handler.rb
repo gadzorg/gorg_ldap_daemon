@@ -42,7 +42,8 @@ class UpdateGroupMessageHandler < BaseMessageHandler
 
       new_members=[]
       to_add_uuids.each do |uuid|
-        if member=LDAP::Account.find(attribute: :uuid, value: uuid)
+        member=LDAP::Account.find(attribute: :uuid, value: uuid)
+        if member
           new_members<<member
         else
           raise_ldap_account_not_found(:uuid,uuid)

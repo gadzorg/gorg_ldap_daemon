@@ -6,7 +6,7 @@ class DeleteGroupMessageHandler < BaseMessageHandler
 
   def process
     set_cn
-    GorgLdapDaemon.logger.info("Received Group Delete order for UUID : #{@cn}")
+    GorgLdapDaemon.logger.info("Received Group Delete order for cn : #{@cn}")
 
     @group=LDAP::Group.find(attribute: :cn,value: @cn)
 
