@@ -22,7 +22,9 @@ class GorgLdapDaemon
   # Exit with Ctrl+C
   def run
     begin
-      puts " [*] Waiting for messages. To exit press CTRL+C"
+      puts " [*] Running with pid #{Process.pid}"
+      puts " [*] Running in #{self.class.env} environment"
+      puts " [*] To exit press CTRL+C or send a SIGINT"
       self.start
       loop do
         sleep(1)
@@ -33,10 +35,12 @@ class GorgLdapDaemon
   end
 
   def start
+    GorgLdapDaemon.logger.info("Starting LdapDaemon Bot")
     @gorg_service.start
   end
 
   def stop
+    GorgLdapDaemon.logger.info("Stopping LdapDaemon Bot")
     @gorg_service.stop
   end
 
@@ -47,7 +51,7 @@ class GorgLdapDaemon
   end
 
   def self.config
-    RAW_CONFIG[ENV['GORG_LDAP_DAEMON_ENV']]
+    RAW_CONFIG[self.env]
   end
 
   def self.root
@@ -66,5 +70,6 @@ class GorgLdapDaemon
   end
 end
 
+require File.expand_path("../message_handlers/base_message_handler.rb",__FILE__)
 Dir[File.expand_path("../**/*.rb",__FILE__)].each {|file| require file }
 Dir[File.expand_path("../../config/initializers/*.rb",__FILE__)].each {|file|require file }

@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-require 'byebug'
-
 class DeleteAccountMessageHandler < BaseMessageHandler
   # Respond to routing key: request.gapps.create
 
@@ -13,7 +11,7 @@ class DeleteAccountMessageHandler < BaseMessageHandler
     @account=LDAP::Account.find(attribute: :uuid,value: @uuid)
 
     if @account
-      @account.delete
+      @account.destroy
       GorgLdapDaemon.logger.info("Successfully deleted account #{@uuid}")
     else
       raise_ldap_account_not_found(:uuid, @uuid)

@@ -75,6 +75,11 @@ class BaseMessageHandler < GorgService::MessageHandler
     GorgLdapDaemon.logger.error("Account not found in Gram - UUID= #{value}")
     raise_hardfail("Account not found in Gram - UUID= #{value}",error: GramAccountNotFoundError)
   end
+
+  def raise_not_updated_group(ldap_group)
+    GorgLdapDaemon.logger.error("Unable to save group #{ldap_group.cn} : #{ldap_group.errors.messages.inspect}")
+    raise_hardfail("Unable to save group #{ldap_group.cn} : #{ldap_group.errors.messages.inspect}")
+  end
 end
 
 ## Error classes

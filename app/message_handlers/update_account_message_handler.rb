@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-require 'byebug'
-
 class UpdateAccountMessageHandler < BaseMessageHandler
   # Respond to routing key: request.gapps.create
 
@@ -10,49 +8,51 @@ class UpdateAccountMessageHandler < BaseMessageHandler
     set_uuid
     GorgLdapDaemon.logger.info("Received Account Update order for UUID : #{@uuid}")
 
-    @data=retrieve_gram_data
+    @gram_account=retrieve_gram_data
 
-    @ldap_key=@data.uuid
+    @ldap_key=@gram_account.uuid
     GorgLdapDaemon.logger.debug("LDAPKey (uuid) = #{@ldap_key.inspect}")
     raise_invalide_ldap_key unless @ldap_key
 
-    @account=LDAP::Account.find(attribute: "uuid", value: @ldap_key)
-    @account||=LDAP::Account.new(default_values)
-    @account.assign_attributes(attributes_mapping)
- 
-    if @account.save
+    #update Account Attributes
+    @ldap_account=LDAP::Account.find_or_build_by_uuid(@ldap_key)
+    @ldap_account.assign_attributes_from_gram(@gram_account)
+    if @ldap_account.save
       GorgLdapDaemon.logger.info("Successfully updated account #{@uuid}")
     else
       raise_not_updated
     end
+
+    target_groups=@gram_account.groups.map{|g| g.short_name}
+    current_groups=@ldap_account.groups.map{|g| g.cn}
+
+    to_add_groups_cn=target_groups-current_groups
+    to_remove_groups_cn=current_groups-target_groups
+
+    to_add_gram_groups=@gram_account.groups.select{|g| to_add_groups_cn.include?(g.short_name)}
+    to_remove_ldap_groups=@ldap_account.groups.select{|g| to_remove_groups_cn.include?(g.cn)}
+
+    @ldap_account.groups.delete(to_remove_ldap_groups)
+
+    to_add_gram_groups.each do |gram_group|
+      #check groups existence and create it if not
+      unless (ldap_group=LDAP::Group.find_or_build_by_name(gram_group.short_name)) && ldap_group.persisted?
+        ldap_group.assign_attributes_from_gram(gram_group)
+        if ldap_group.save
+          GorgLdapDaemon.logger.info("Group #{gram_group.short_name} did not exist - created")
+        else
+          raise_not_updated_group(ldap_group)
+        end
+      end
+
+      @ldap_account.groups<<ldap_group
+    end
+    GorgLdapDaemon.logger.info("#{@uuid} removed from group #{to_remove_groups_cn.join(", ")}") if to_remove_groups_cn.any?
+    GorgLdapDaemon.logger.info("#{@uuid} added to group #{to_add_groups_cn.join(", ")}") if to_add_groups_cn.any?
   end
 
   def retrieve_gram_data
     begin
-      # GorgLdapDaemon.logger.debug("Use mockup API")
-      # MockupGramAccount.new ({
-      #   uuid:@uuid,
-      #   id_soce: 157157,
-      #   hruid: "alexandre.narbonne.ext.157",
-      #   id: 53,
-      #   enabled: true,
-      #   lastname: "Narbonne",
-      #   firstname: "Alexandre",
-      #   email: "alexandre.narbonne@poubs.org",
-      #   gapps_email: "alexandre.narbonne@poubs.org",
-      #   #password:"",
-      #   gender: "male",
-      #   is_gadz: true,
-      #   is_student: false,
-      #   school_id: "2011-1882",
-      #   is_alumni: true,
-      #   buque_texte: "ratatosk",
-      #   buque_zaloeil: "Ratatosk",
-      #   gadz_fams: "157",
-      #   gadz_fams_zaloeil: "157" ,
-      #   gadz_proms_principale: "me211",
-      # })
-
       #retrieve data from Gram, with password
       GramV2Client::Account.find(@uuid, params:{show_password_hash: "true"})
 
@@ -61,48 +61,7 @@ class UpdateAccountMessageHandler < BaseMessageHandler
     rescue ActiveResource::ServerError
       raise_gram_connection_error
     end
-  end
-
-  def default_values
-    {
-      descriptionCompte: "Created by LdapDaemon at #{DateTime.now.to_s}",
-      homeDirectory: '/nonexistant',
-      loginValidationCheck: "CGU=;",
-      dn:"hruid=#{@data.hruid},ou=comptes,ou=gram,dc=gadz,dc=org"
-    }
-  end
-
-  def attributes_mapping
-    uid_number= @data.id_soce+1000
-
-    {
-      :uuid           => @data.uuid,
-      :idSoce         => @data.id_soce,
-      :hruid          => @data.hruid,
-      :prenom         => @data.firstname,
-      :nom            => @data.lastname,
-      :actif          => @data.enabled,
-      :gidNumber      => uid_number,
-      :uid            => uid_number.to_s,
-      :uidNumber      => uid_number,
-      :emailCompte    => @data.email,
-      :emailForge     => @data.email,
-      :userPassword   => convert_password_to_ldap_format(@data.password)
-    }
-  end
-
-
-  #Take a sha1 hex string in input
-  #ex : 5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8
-  #returns a base64 encoded value prefixed with {SHA}
-  def convert_password_to_ldap_format passwd
-    #convert hexsha1 string to its binary string
-    binary_value=[passwd].pack('H*')
-    #base64 encoding
-    b64_hash=Base64.encode64(binary_value).chomp!
-    #prefix with '{SHA}'
-    return "{SHA}#{b64_hash}"
-  end
+  end 
 
   def set_uuid
     @uuid=msg.data[:uuid]
@@ -117,8 +76,13 @@ class UpdateAccountMessageHandler < BaseMessageHandler
   end
 
   def raise_not_updated
-    GorgLdapDaemon.logger.error("Unable to save : #{@account.errors.messages.inspect}")
-    raise_hardfail("Invalid data in GrAM - #{@account.errors.messages.inspect}")
+    GorgLdapDaemon.logger.error("Unable to save : #{@ldap_account.errors.messages.inspect}")
+    raise_hardfail("Invalid data in GrAM - #{@ldap_account.errors.messages.inspect}")
+  end
+
+  def raise_not_updated_group(ldap_group)
+    GorgLdapDaemon.logger.error("Unable to save group #{ldap_group.cn} : #{ldap_group.errors.messages.inspect}")
+    raise_hardfail("Unable to save group #{ldap_group.cn} : #{ldap_group.errors.messages.inspect}")
   end
 
 end

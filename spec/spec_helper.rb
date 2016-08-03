@@ -1,6 +1,8 @@
 $LOAD_PATH.unshift File.expand_path('../../app', __FILE__)
 require 'gorg_ldap_daemon'
 
+ ENV['GORG_LDAP_DAEMON_ENV']="test"
+
 RSpec.configure do |config|
   config.mock_with :rspec do |mocks|
 

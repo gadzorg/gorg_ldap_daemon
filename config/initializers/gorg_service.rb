@@ -52,6 +52,8 @@ GorgService.configure do |c|
 
   c.message_handler_map={
     "request.ldapd.account.update"=>UpdateAccountMessageHandler,
-    "request.ldapd.account.delete"=>DeleteAccountMessageHandler
+    "request.ldapd.account.delete"=>DeleteAccountMessageHandler,
+    "request.ldapd.group.update"=>UpdateGroupMessageHandler,
+    "request.ldapd.group.delete"=>DeleteGroupMessageHandler,
   }
 end
