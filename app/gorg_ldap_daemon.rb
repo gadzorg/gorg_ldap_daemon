@@ -56,6 +56,7 @@ class GorgLdapDaemon
 
   def self.logger
     unless @logger
+      STDOUT.sync = true
       file = File.open(File.expand_path("../logs/#{self.env}.log",self.root), "a+")
       file.sync = true
 #      @logger = Logger.new(file, 'daily')
