@@ -6,7 +6,8 @@ class GorgLdapDaemon::Configuration
     @yaml_config = File.exist?(CONFIG_FILE_PATH) ? YAML::load(File.open(CONFIG_FILE_PATH))[env] : {}   
   end
 
-  def [](key)
+  def [](k)
+    key=k.to_s
     env_value(key)|| @yaml_config[key]
   end
 

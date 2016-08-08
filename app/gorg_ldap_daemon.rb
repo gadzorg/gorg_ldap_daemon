@@ -18,7 +18,7 @@ class GorgLdapDaemon
   # Exit with Ctrl+C
   def run
     begin
-      puts " [*] Running with pid #{Process.pid}"
+      puts " [*] Running #{self.class.config[:application_name]} with pid #{Process.pid}"
       puts " [*] Running in #{self.class.env} environment"
       puts " [*] To exit press CTRL+C or send a SIGINT"
       self.start
