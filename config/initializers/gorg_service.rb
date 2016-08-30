@@ -31,10 +31,10 @@ GorgService.configure do |c|
   c.rabbitmq_exchange_name=GorgLdapDaemon.config['rabbitmq_exchange_name']
   #
   # time before trying again on softfail in milliseconds (temporary error)
-  c.rabbitmq_deferred_time=GorgLdapDaemon.config['rabbitmq_deferred_time']
+  c.rabbitmq_deferred_time=GorgLdapDaemon.config['rabbitmq_deferred_time'].to_i
   # 
   # maximum number of try before discard a message
-  c.rabbitmq_max_attempts=GorgLdapDaemon.config['rabbitmq_max_attempts']
+  c.rabbitmq_max_attempts=GorgLdapDaemon.config['rabbitmq_max_attempts'].to_i
   #
   # The routing key used when sending a message to the central log system (Hardfail or Warning)
   # Central logging is disable if nil
