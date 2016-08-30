@@ -2,7 +2,7 @@ require File.expand_path('../../ldap.rb', __FILE__)
 module LDAP
   class Account < LDAP::Base 
     ldap_mapping :dn_attribute => 'uuid',
-                 :classes => ['Compte','top'],
+                 :classes => ['Compte'],
                  :prefix => 'ou=comptes',
                  :scope => :one
 

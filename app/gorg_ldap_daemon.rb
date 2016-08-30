@@ -54,14 +54,27 @@ class GorgLdapDaemon
     File.dirname(__FILE__)
   end
 
-  def self.logger
+def self.logger
     unless @logger
-      STDOUT.sync = true  #Allow realtime logging in Heroku
-      file = File.open(File.expand_path("../logs/#{self.env}.log",self.root), "a+")
-      file.sync = true
-#      @logger = Logger.new(file, 'daily')
+      STDOUT.sync = true #Allow realtime logging in Heroku
       @logger = Logger.new(STDOUT)
 
+      @logger.level = case (self.config[:logger_level]||"").downcase
+      when "debug"
+        Logger::DEBUG
+      when "info"
+        Logger::INFO
+      when "warn"
+        Logger::WARN
+      when "error"
+        Logger::ERROR
+      when "fatal"
+        Logger::FATAL
+      when "unknown"
+        Logger::UNKNOWN
+      else
+        Logger::DEBUG
+      end
     end
     @logger
   end
