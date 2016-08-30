@@ -17,7 +17,7 @@ class UpdateAccountMessageHandler < BaseMessageHandler
     #update Account Attributes
     @ldap_account=LDAP::Account.find_or_build_by_uuid(@ldap_key)
     @ldap_account.assign_attributes_from_gram(@gram_account)
-    GorgLdapDaemon.logger.debug("LDAP Account to be saved : #{@ldap_account.cn} : #{@ldap_account.attributes.inspect}")
+    GorgLdapDaemon.logger.debug("LDAP Account to be saved : #{@ldap_account.dn} : #{@ldap_account.attributes.inspect}")
     if @ldap_account.save
       GorgLdapDaemon.logger.info("Successfully updated account #{@uuid}")
     else
