@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
+
 require 'yaml'
 require 'gorg_service'
 require 'active_ldap'
@@ -80,6 +81,7 @@ def self.logger
   end
 end
 
+require 'byebug' unless GorgLdapDaemon.env == "production"
 require File.expand_path("../configuration.rb",__FILE__)
 require File.expand_path("../message_handlers/base_message_handler.rb",__FILE__)
 Dir[File.expand_path("../**/*.rb",__FILE__)].each {|file| require file }

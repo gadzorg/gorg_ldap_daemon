@@ -4,6 +4,14 @@
 class UpdateAccountMessageHandler < BaseMessageHandler
   # Respond to routing key: request.gapps.create
 
+  def validate_payload   
+    unless msg.data[:uuid]
+      GorgLdapDaemon.logger.error "Data validation error : INVALID UUID"
+      raise_hardfail("Data validation error", error: {'INVALID UUID' => msg.data[:uuid]})
+    end
+    GorgLdapDaemon.logger.debug "Message data validated"
+  end
+
   def process
     set_uuid
     GorgLdapDaemon.logger.info("Received Account Update order for UUID : #{@uuid}")
@@ -64,10 +72,10 @@ class UpdateAccountMessageHandler < BaseMessageHandler
       #retrieve data from Gram, with password
       GramV2Client::Account.find(@uuid, params:{show_password_hash: "true"})
 
-    rescue ActiveResource::ResourceNotFound
-      raise_gram_account_not_found(@uuid)
-    rescue ActiveResource::ServerError
-      raise_gram_connection_error
+    rescue ActiveResource::ResourceNotFound => e
+      raise_gram_account_not_found(@uuid, error: e)
+    rescue ActiveResource::ServerError => e
+      raise_gram_connection_error(error: e)
     end
   end 
 

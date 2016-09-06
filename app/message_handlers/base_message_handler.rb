@@ -14,14 +14,25 @@ class BaseMessageHandler < GorgService::MessageHandler
   def initialize incoming_msg
     @msg=incoming_msg
 
-    # validate_payload method should be implemented by children classes
-    validate_payload
-
     begin
-      # process method should be implemented by children classes
-      process
-    rescue ActiveLdap::ConnectionError
-      raise_ldap_connection_error
+      begin
+
+        # validate_payload method should be implemented by children classes
+        validate_payload
+
+        # process method must be implemented by children classes
+        process
+
+      rescue ActiveLdap::ConnectionError
+        raise_ldap_connection_error
+      end
+
+    rescue GorgService::HardfailError, GorgService::SoftfailError
+      raise
+    
+    rescue StandardError => e
+      GorgLdapDaemon.logger.error "Uncatched exception : #{e.inspect}"
+      raise_hardfail("Uncatched exception", error: e.as_json)
     end
   end
 
@@ -60,9 +71,9 @@ class BaseMessageHandler < GorgService::MessageHandler
   end
 
   # To be raised in case of connection errors with Gram API server
-  def raise_gram_connection_error
+  def raise_gram_connection_error(error: nil)
     GorgLdapDaemon.logger.error("Unable to connect to GrAM API server")
-    raise_softfail("Unable to connect to GrAM API server")
+    raise_softfail("Unable to connect to GrAM API server", error: error.as_json)
   end
 
 
@@ -71,9 +82,9 @@ class BaseMessageHandler < GorgService::MessageHandler
     raise_hardfail("Account not found in LDAP - #{key}= #{value}",error: LdapObjectNotFoundError)
   end
 
-  def raise_gram_account_not_found(value)
+  def raise_gram_account_not_found(value, error: nil)
     GorgLdapDaemon.logger.error("Account not found in Gram - UUID= #{value}")
-    raise_hardfail("Account not found in Gram - UUID= #{value}",error: GramAccountNotFoundError)
+    raise_hardfail("Account not found in Gram - UUID= #{value}", error:(error.as_json||GramAccountNotFoundError))
   end
 
   def raise_not_updated_group(ldap_group)

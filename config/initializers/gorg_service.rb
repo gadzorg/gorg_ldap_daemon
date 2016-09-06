@@ -38,7 +38,7 @@ GorgService.configure do |c|
   #
   # The routing key used when sending a message to the central log system (Hardfail or Warning)
   # Central logging is disable if nil
-  c.log_routing_key=GorgLdapDaemon.config['rlog_routing_key']
+  c.log_routing_key=GorgLdapDaemon.config['log_routing_key']
   #
   # Routing hash
   #  map routing_key of received message with MessageHandler 
@@ -55,5 +55,11 @@ GorgService.configure do |c|
     "request.ldapd.account.delete"=>DeleteAccountMessageHandler,
     "request.ldapd.group.update"=>UpdateGroupMessageHandler,
     "request.ldapd.group.delete"=>DeleteGroupMessageHandler,
+    "notify.gram.account.created"=>GramAccountUpdatedMessageHandler,
+    "notify.gram.account.updated"=>GramAccountUpdatedMessageHandler,
+    "notify.gram.account.deleted"=>GramAccountDeletedMessageHandler,
+    "notify.gram.group.created"=>GramGroupUpdatedMessageHandler,
+    "notify.gram.group.updated"=>GramGroupUpdatedMessageHandler,
+    "notify.gram.group.deleted"=>GramGroupDeletedMessageHandler,
   }
 end
