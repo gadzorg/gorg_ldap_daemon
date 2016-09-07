@@ -34,7 +34,8 @@ RSpec.describe UpdateAccountMessageHandler, type: :message_handler do
                                                   :assign_attributes_from_gram => true,
                                                   :save => true,
                                                   :groups => [],
-                                                  :attributes => []
+                                                  :attributes => [],
+                                                  :dn => "someDn",
                                                   )
         }
 
@@ -121,6 +122,7 @@ RSpec.describe UpdateAccountMessageHandler, type: :message_handler do
           :assign_attributes_from_gram => true,
           :save => false,
           :attributes => [],
+          :dn => "someDn",
           :errors => double("errors", :messages => "une erreur"))
 
         expect(LDAP::Account).to receive(:find).with(attribute: "uuid", value: "12345678-1234-1234-1234-123456789012") {mock_ldap_account}
