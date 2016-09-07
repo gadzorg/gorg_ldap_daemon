@@ -55,11 +55,11 @@ GorgService.configure do |c|
     "request.ldapd.account.delete"=>DeleteAccountMessageHandler,
     "request.ldapd.group.update"=>UpdateGroupMessageHandler,
     "request.ldapd.group.delete"=>DeleteGroupMessageHandler,
-    "notify.gram.account.created"=>GramAccountUpdatedMessageHandler,
-    "notify.gram.account.updated"=>GramAccountUpdatedMessageHandler,
-    "notify.gram.account.deleted"=>GramAccountDeletedMessageHandler,
-    "notify.gram.group.created"=>GramGroupUpdatedMessageHandler,
-    "notify.gram.group.updated"=>GramGroupUpdatedMessageHandler,
-    "notify.gram.group.deleted"=>GramGroupDeletedMessageHandler,
+    "notify.account.created"=>GramAccountUpdatedMessageHandler,
+    "notify.account.updated"=>GramAccountUpdatedMessageHandler,
+    "notify.account.deleted"=>GramAccountDeletedMessageHandler,
+    "notify.group.created"=>GramGroupUpdatedMessageHandler,
+    "notify.group.updated"=>GramGroupUpdatedMessageHandler,
+    "notify.group.deleted"=>GramGroupDeletedMessageHandler,
   }
 end
