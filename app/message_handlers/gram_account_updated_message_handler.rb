@@ -5,7 +5,6 @@ class GramAccountUpdatedMessageHandler < GorgService::MessageHandler
     proxy_msg=incoming_msg.dup
     proxy_msg.data=incoming_msg.data.dup
     proxy_msg.data[:uuid]=proxy_msg.data[:key]
-    byebug
     UpdateAccountMessageHandler.new proxy_msg
   end
 
