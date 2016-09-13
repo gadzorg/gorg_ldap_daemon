@@ -43,7 +43,7 @@ module LDAP
         :emailCompte    => gram_data.email,
         :emailForge     => gram_data.email,
         :userPassword   => self.class.convert_password_to_ldap_format(gram_data.password),
-        :alias          => gram_data.alias.map{|a| a.name}
+        :alias          => gram_data.aliases.map{|a| a.name}
       })
       self.dn="hruid=#{gram_data.hruid},ou=comptes,#{GorgLdapDaemon.config["ldap_base"]}"
       self
