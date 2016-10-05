@@ -32,7 +32,7 @@ class UpdateAccountMessageHandler < BaseMessageHandler
       raise_not_updated
     end
 
-    update_group_membership
+    #update_group_membership
   end
 
   def update_group_membership
