@@ -19,6 +19,7 @@ default: &default
   ldap_base: dc=mycompany,dc=org
   ldap_bind_dn: cn=myuser,dc=mycompany,dc=org
   ldap_password: P4ssWord
+  ldap_connection_method: plain #or ssl, tls
 
 
 development:
