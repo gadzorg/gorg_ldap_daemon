@@ -1,19 +1,11 @@
 #!/usr/bin/env ruby
 
 require "bundler/setup"
-require "gram_v1_client"
-require "gorg_service"
+APP_PATH = File.expand_path('../../config/boot', __FILE__)
 
-$LOAD_PATH.unshift File.expand_path('../../app', __FILE__)
+require APP_PATH
 
-require 'gorg_ldap_daemon'
 
-# You can add fixtures and/or initialization code here to make experimenting
-# with your gem easier. You can also use a different console, if you like.
-
-# (If you use this, don't forget to add pry to your Gemfile!)
-# require "pry"
-# Pry.start
 
 require "irb"
 IRB.start

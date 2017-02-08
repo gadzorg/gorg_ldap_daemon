@@ -1,5 +1,6 @@
-class GramGroupDeletedMessageHandler < GorgService::MessageHandler
-  # Respond to routing key: request.gapps.create
+class GramGroupDeletedMessageHandler < GorgService::Consumer::MessageHandler::Base
+
+  listen_to "notify.group.deleted"
 
   def initialize incoming_msg
     proxy_msg=incoming_msg.dup

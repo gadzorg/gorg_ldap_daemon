@@ -1,5 +1,7 @@
-class GramAccountUpdatedMessageHandler < GorgService::MessageHandler
-  # Respond to routing key: request.gapps.create
+class GramAccountUpdatedMessageHandler < GorgService::Consumer::MessageHandler::Base
+
+  listen_to "notify.account.updated"
+  listen_to "notify.account.created"
 
   def initialize incoming_msg
     proxy_msg=incoming_msg.dup

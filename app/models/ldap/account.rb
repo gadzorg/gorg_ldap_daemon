@@ -1,6 +1,18 @@
 require File.expand_path('../../ldap.rb', __FILE__)
 module LDAP
-  class Account < LDAP::Base 
+  class Account < LDAP::Base
+
+    class NotFound < StandardError
+
+      def initialize(query)
+        @query=query
+      end
+
+      def to_s
+        "Unable to find LDAP::Account from query #{@query}"
+      end
+    end
+
     ldap_mapping :dn_attribute => 'uuid',
                  :classes => ['Compte'],
                  :prefix => 'ou=comptes',
@@ -59,6 +71,14 @@ module LDAP
         homeDirectory: '/nonexistant',
         loginValidationCheck: "CGU=;"      
       }
+    end
+
+    def self.find!(*args,&block)
+      if result=self.find(*args,&block)
+        result
+      else
+        raise NotFound.new(args)
+      end
     end
 
     #Take a sha1 hex string in input

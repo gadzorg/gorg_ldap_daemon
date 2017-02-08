@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-$LOAD_PATH.unshift File.expand_path('../../app', __FILE__)
 
-require 'gorg_ldap_daemon'
+require "bundler/setup"
+APP_PATH = File.expand_path('../../config/boot', __FILE__)
 
-GorgLdapDaemon.new.run
+require APP_PATH
+
+Application.new.run

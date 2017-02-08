@@ -1,10 +1,13 @@
-require "codeclimate-test-reporter"
-CodeClimate::TestReporter.start
 
-$LOAD_PATH.unshift File.expand_path('../../app', __FILE__)
-require 'gorg_ldap_daemon'
+require "bundler/setup"
+require "simplecov"
+SimpleCov.start
+APP_PATH = File.expand_path('../../config/boot', __FILE__)
 
- ENV['GORG_LDAP_DAEMON_ENV']="test"
+require APP_PATH
+
+
+ENV["RAKE_ENV"]="test"
 
 RSpec.configure do |config|
   config.mock_with :rspec do |mocks|

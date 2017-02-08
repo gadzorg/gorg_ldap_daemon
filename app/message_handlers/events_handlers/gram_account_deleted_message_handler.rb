@@ -1,5 +1,7 @@
-class GramAccountDeletedMessageHandler < GorgService::MessageHandler
-  # Respond to routing key: request.gapps.create
+class GramAccountDeletedMessageHandler < GorgService::Consumer::MessageHandler::Base
+
+  listen_to "notify.account.deleted"
+
 
   def initialize incoming_msg
     proxy_msg=incoming_msg.dup
