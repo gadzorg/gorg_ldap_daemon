@@ -11,7 +11,7 @@ class UpdateGroupMessageHandler < GorgService::Consumer::MessageHandler::Request
     Application.logger.info("Received Group Update order for cn=#{@cn}")
 
     @group=LDAP::Group.find_or_build_by_name(@cn)
-    @group.cn=@data[:cn]
+    @group.cn=@cn
     #@group.uuid=@data[:uuid]
 
     @group.save!
