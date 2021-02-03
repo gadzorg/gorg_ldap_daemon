@@ -68,7 +68,7 @@ class UpdateAccountMessageHandler < GorgService::Consumer::MessageHandler::Reque
       #retrieve data from Gram, with password
       GramV2Client::Account.find(@uuid, params: {show_password_hash: "true"})
 
-    rescue ActiveResource::ResourceNotFound => e
+    rescue GramV2Client::ResourceNotFound => e
       Application.logger.error("Account not found in Gram - UUID= #{@uuid}")
       raise_hardfail("Account not found in Gram - UUID= #{@uuid}", error:e)
     end
